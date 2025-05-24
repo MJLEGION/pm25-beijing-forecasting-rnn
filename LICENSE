@@ -1,0 +1,55 @@
+### Step 4: Create Data Loading Module
+
+import pandas as pd
+import numpy as np
+from pathlib import Path
+
+class DataLoader:
+    def __init__(self, data_path="data/raw"):
+        self.data_path = Path(data_path)
+    
+    def load_beijing_data(self):
+        """
+        Load your actual Beijing PM2.5 dataset
+        Modify this function based on your data format
+        """
+        try:
+            # Load PM2.5 data
+            pm25_file = self.data_path / "beijing_pm25.csv"
+            if pm25_file.exists():
+                pm25_data = pd.read_csv(pm25_file)
+                print(f"Loaded PM2.5 data: {pm25_data.shape}")
+            else:
+                print("PM2.5 data file not found. Using synthetic data.")
+                return None
+            
+            # Load weather data
+            weather_file = self.data_path / "weather_data.csv"
+            if weather_file.exists():
+                weather_data = pd.read_csv(weather_file)
+                print(f"Loaded weather data: {weather_data.shape}")
+            else:
+                print("Weather data file not found.")
+                return None
+            
+            # Merge datasets (adjust based on your data structure)
+            merged_data = self.merge_datasets(pm25_data, weather_data)
+            return merged_data
+            
+        except Exception as e:
+            print(f"Error loading data: {e}")
+            return None
+    
+    def merge_datasets(self, pm25_data, weather_data):
+        """
+        Merge PM2.5 and weather datasets
+        Adjust this based on your data structure
+        """
+        # Example merge - modify based on your column names
+        if 'datetime' in pm25_data.columns and 'datetime' in weather_data.columns:
+            merged = pd.merge(pm25_data, weather_data, on='datetime', how='inner')
+        else:
+            # Handle different datetime column names
+            merged = pd.concat([pm25_data, weather_data], axis=1)
+        
+        return merged
